@@ -1,0 +1,25 @@
+{
+  "city": "shining-on-the-hill",
+  "orderStates": [
+    {
+      "state": "preparing",
+      "stateDisplayValue": "Готовится",
+      "count": 10
+    },
+    {
+      "state": "ready",
+      "stateDisplayValue": "Ожидает",
+      "count": 10
+    },
+    {
+      "state": "inTransit",
+      "stateDisplayValue": "В пути",
+      "count": 10
+    },
+    {
+      "state": "delivered",
+      "stateDisplayValue": "Доставлено",
+      "count": 10
+    }
+  ]
+}
