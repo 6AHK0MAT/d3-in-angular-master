@@ -99,7 +99,7 @@ export class OrderStatusComponent implements OnInit, OnDestroy, AfterContentInit
   }
 
   navigateLeft() {
-    this.router.navigate(['/delivery']);
+    this.router.navigate(['/d3-chart']);
   }
 
   navigateRight() {

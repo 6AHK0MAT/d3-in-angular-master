@@ -138,7 +138,7 @@ export class AreaChartComponent implements OnInit, OnChanges {
             .attr('text-anchor', 'middle')
             .attr('transform', 'translate(10,50) rotate(-90)')
             .style('font-size', 8)
-            .text('Frequency');
+            .text('Значения Y');
         }
     }
     private createAreaCharts() {

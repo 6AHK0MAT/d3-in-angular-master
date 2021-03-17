@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 
-import { AreaChartComponent } from './../area-chart/area-chart.component';
+import { AreaChartComponent } from '../area-chart/area-chart.component';
 import { ChartControlsService } from '../chart-controls.service';
 
 export class DeliveryMetric {
@@ -139,7 +139,7 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   navigateRight() {
-    this.router.navigate(['/status']);
+    this.router.navigate(['/d3-chart']);
   }
 
   navigateLeft() {
