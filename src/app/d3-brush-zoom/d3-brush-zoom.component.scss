@@ -40,45 +40,13 @@
   }
 }
 
-::ng-deep #d3_chart {
-  background: #000000;
-  margin: 0;
-  padding: 0;
-  font: 10px sans-serif;
+::ng-deep .area {
+  fill: steelblue;
+  clip-path: url(#clip);
 }
 
-::ng-deep #d3_chart text {
-  fill: #fff;
-}
-
-::ng-deep #d3_chart .axis path,
-::ng-deep #d3_chart .axis line {
+::ng-deep .zoom {
+  cursor: move;
   fill: none;
-  stroke: #333;
-  shape-rendering: crispEdges;
-}
-
-::ng-deep #d3_chart .axis path {
-  stroke: #aaa;
-}
-
-::ng-deep #d3_chart .line {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 200px;
-}
-
-::ng-deep #d3_chart .data {
-  stroke: #fff;
-  stroke-width: 2px;
-}
-
-::ng-deep #d3_chart .average-50 {
-  stroke: #f10428;
-  fill: none;
-}
-
-::ng-deep #d3_chart .average-25 {
-  stroke: #0004ff;
-  fill: none;
+  pointer-events: all;
 }

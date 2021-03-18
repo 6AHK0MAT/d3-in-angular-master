@@ -1,16 +1,31 @@
-import { Component, OnInit, OnDestroy, AfterContentInit, ElementRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { ViewChild } from '@angular/core';
+import {AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AreaChartComponent} from '../area-chart/area-chart.component';
+import {Router} from '@angular/router';
 import * as d3 from 'd3';
+import 'chartjs-plugin-streaming';
+import {grpc} from '@improbable-eng/grpc-web';
 
-import { AreaChartComponent } from '../area-chart/area-chart.component';
+import {Movies} from 'src/generated/movies/movies_pb_service';
+import {MoviesClient, ServiceError} from 'src/generated/movies/movies_pb_service';
+import {
+  GetRequest,
+  GetResponse,
+  EmptyRequest,
+  GetListResponse,
+  WeatherData,
+  InsertResponse
+} from 'src/generated/movies/movies_pb';
 
 @Component({
-  selector: 'app-d3-chart',
-  templateUrl: './d3-chart.component.html',
-  styleUrls: ['./d3-chart.component.scss']
+  selector: 'app-d3-proto',
+  templateUrl: './d3-proto.component.html',
+  styleUrls: ['./d3-proto.component.scss']
 })
-export class D3ChartComponent implements OnInit, AfterContentInit {
+export class D3ProtoComponent implements OnInit, AfterContentInit {
+
+  public dataForChart = 0;
+  response: any;
+  // public valOfStream = 25;
 
   @ViewChild('areaChart', { static: true }) chart: AreaChartComponent;
 
@@ -18,77 +33,44 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit() {
+    this.getData();
+  }
+
+  getData(): any {
+    const getEmptyRequest = new EmptyRequest();
+
+    grpc.unary(Movies.GetEmpty, {
+      request: getEmptyRequest,
+      host: 'https://localhost:5001',
+      onEnd: res => {
+        const {status, statusMessage, headers, message, trailers} = res;
+        if (status === grpc.Code.OK && message) {
+          const result = message.toObject() as GetListResponse.AsObject;
+          // console.log('Данные nameval для Установки 1 - ', result.data.moviesList[0].nameval);
+          this.dataForChart = result.data.moviesList[0].nameval;
+          console.log('Данные для установки 30 - ', this.dataForChart);
+        }
+      }
+    });
+    return this.dataForChart;
+  }
+  onUpdate(): void {
+    const client = new MoviesClient('https://localhost:5001');
+    const req = new GetRequest();
+
+    client.update(req, (err: ServiceError, response: InsertResponse) => {
+      if (err) {
+        this.response = `Error: {err.message}`;
+        return;
+      }
+      this.response = response.getData();
+      // console.log(this.response);
+      this.getData();
+    });
   }
 
   ngAfterContentInit() {
-    // this.initialize();
-    // this.d3StaticChart();
     this.d3OnlineChart();
-  }
-
-  d3StaticChart() {
-    const margin = {top: 50, right: 50, bottom: 50, left: 50};
-    const width = 800 - margin.left - margin.right; // Use the window's width
-    const height = 500 - margin.top - margin.bottom; // Use the window's height
-
-    // The number of datapoints
-    const n = 21;
-
-    // 5. X scale will use the index of our data
-    const xScale = d3.scaleLinear()
-      .domain([0, n - 1]) // input
-      .range([0, width]); // output
-
-    // 6. Y scale will use the randomly generate number
-    const yScale = d3.scaleLinear()
-      .domain([0, 1]) // input
-      .range([height, 0]); // output
-
-    // 7. d3's line generator
-    const line = d3.line<number>()
-      .x((d, i) => xScale(i)) // set the x values for the line generator
-      .y((d) => yScale(d)); // set the y values for the line generator
-      // .curve(d3.curveMonotoneX); // apply smoothing to the line
-
-    // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
-    const dataset = d3.range(n).map((d) => ({y: d3.randomUniform(1)() }));
-    console.log(dataset);
-
-// 1. Add the SVG to the page and employ #2
-    const svg = d3.select('#d3_chart').append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
-      .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-// 3. Call the x axis in a group tag
-    svg.append('g')
-      .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
-
-// 4. Call the y axis in a group tag
-    svg.append('g')
-      .attr('class', 'y axis')
-      .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
-
-// 9. Append the path, bind the data, and call the line generator
-    svg.append('path')
-      .datum(dataset) // 10. Binds data to the line
-      .attr('class', 'line'); // Assign a class for styling
-      // .attr('d', line()); // 11. Calls the line generator
-
-    // $averages_50.datum(latestAverages_50).attr('d', line);
-    // $Averages50.attr('class', 'average-50').attr('d', line(LatestAverages50[0]));
-
-// 12. Appends a circle for each datapoint
-    svg.selectAll('.dot')
-      .data(dataset)
-      .enter().append('circle') // Uses the enter().append() method
-      .attr('class', 'dot') // Assign a class for styling
-      .attr('cx', (d, i) => xScale(i))
-      .attr('cy', (d) => yScale(d.y))
-      .attr('r', 5);
   }
 
   d3OnlineChart() {
@@ -165,11 +147,12 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
     append('rect').
     attr('width', (w - 40) / num).
     attr('x', (d, i) => i * (w - 40) / num);
+    // const svetofor = (this.dataForChart > 50) ? '#f10428' : '#04f12b';
 
     const legend = svg.append('g').
     attr('transform', `translate(20, 20)`).
     selectAll('g').
-    data([['Данные с установки №1', '#f10428'], ['Данные с установки №2', '#0004ff']]).
+    data([['Данные с установки №30', '#f10428'], []]).
     enter().
     append('g');
 
@@ -185,9 +168,13 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
     text(d => d[0]).
     attr('transform', (d, i) => `translate(10, ${i * 15 + 4})`);
 
-    function tick() {
+    const tick: any = () => {
+      console.log('Значение для установки 30  - ', this.dataForChart);
+      // const valOfStream = this.getData();
+      // console.log(valOfStream);
       time++;
-      data[time] = Math.floor(Math.random() * 101) ;
+      // data[time] = Math.floor(Math.random() * 101) ;
+      data[time] = this.dataForChart ;
       // console.log(data[time]);
       // console.log(Math.floor(Math.random() * 101));
       data[time] = Math.max(data[time], 0);
@@ -241,10 +228,9 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
         latestDeltas.push(deltas[time]);
       }
       // console.log(LatestAverages50);
-    }
+    };
 
     function update() {
-      // console.log(latestAverages_50)
       x.domain([time - num, time]);
       const yDom = d3.extent(latestData);
       yDom[0] = Math.max(yDom[0] - 1, 0);
@@ -256,9 +242,9 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
 
       $yAxis.
       call(yAxis);
+      // console.log(LatestAverages50);
 
       $Averages50.datum(LatestAverages50).attr('class', 'average-50').attr('d', line);
-      $Averages25.datum(LatestAverages25).attr('class', 'average-25').attr('d', line);
 
     }
 
@@ -276,11 +262,11 @@ export class D3ChartComponent implements OnInit, AfterContentInit {
   }
 
   navigateRight() {
-    this.router.navigate(['/status']);
+    this.router.navigate(['/d3-chart']);
   }
 
   navigateLeft() {
-    this.router.navigate(['/d3-proto']);
+    this.router.navigate(['/delivery']);
   }
 
 }

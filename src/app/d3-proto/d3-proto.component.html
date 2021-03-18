@@ -1,10 +1,11 @@
 <mat-card class="container">
   <mat-card-title class="title">
     <mat-icon (click)="navigateLeft()" class="left">keyboard_arrow_left</mat-icon>
-    <div>D3 Stream (random data)</div>
+    <div>D3 protobuf (random data)</div>
     <mat-icon (click)="navigateRight()" class="right">keyboard_arrow_right</mat-icon>
   </mat-card-title>
   <div id="chartContainer">
     <div id="d3_chart"></div>
+    <button (click)="onUpdate()">Обновить значение</button>
   </div>
 </mat-card>

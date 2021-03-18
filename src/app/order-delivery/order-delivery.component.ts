@@ -139,7 +139,7 @@ export class OrderDeliveryComponent implements OnInit, OnDestroy, AfterContentIn
   }
 
   navigateRight() {
-    this.router.navigate(['/d3-chart']);
+    this.router.navigate(['/d3-proto']);
   }
 
   navigateLeft() {

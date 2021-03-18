@@ -17,6 +17,8 @@ import { OrderDeliveryComponent } from './order-delivery/order-delivery.componen
 import { AreaChartComponent } from './area-chart/area-chart.component';
 import { FlashMobComponent } from './fm/flash-mob.component';
 import {D3ChartComponent} from './d3-chart/d3-chart.component';
+import { D3BrushZoomComponent } from './d3-brush-zoom/d3-brush-zoom.component';
+import { D3ProtoComponent } from './d3-proto/d3-proto.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import {D3ChartComponent} from './d3-chart/d3-chart.component';
     D3ChartComponent,
     OrderDeliveryComponent,
     AreaChartComponent,
-    FlashMobComponent
+    FlashMobComponent,
+    D3BrushZoomComponent,
+    D3ProtoComponent
   ],
   imports: [
     BrowserModule,

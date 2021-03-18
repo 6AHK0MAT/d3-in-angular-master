@@ -95,9 +95,9 @@ export class AreaChartComponent implements OnInit, OnChanges {
     }
 
     private setColorScale() {
-        this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+        // this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
         // Below is an example of using custom colors
-        // this.colorScale = d3.scaleOrdinal().domain(["0","1","2","3"]).range(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']);
+        this.colorScale = d3.scaleOrdinal().domain(['0', '1', '2', '3']).range(['#2800ff', '#fff30e', '#04e004', '#ef0098']);
     }
 
     private createXAxis() {
